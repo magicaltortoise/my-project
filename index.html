@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <title>My Quiz</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+    <style media="screen">
+      html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        font-family: 'Shadows Into Light', cursive;
+        /* background-image: linear-gradient(#e66465, #9198e5), url("https://images.unsplash.com/photo-1519750783826-e2420f4d687f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80"); */
+        /* background-image: linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(117, 19, 93, 0.73)), url('https://images.unsplash.com/photo-1519750783826-e2420f4d687f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80'); */
+        /* background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover; */
+
+      }
+
+      body {
+        background: linear-gradient(120deg ,#e66465, #9198e5);
+        animation: cool 10s ease infinite;
+        background-size: 400% 400%;
+      }
+
+      @keyframes cool {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      h1 {
+        margin: 0;
+        text-align: center;
+      }
+
+      img {
+        display: none;
+        width: 250px;
+        height: 250px;
+        margin: 0 auto;
+      }
+
+      div {
+        border: 5px groove lightpink;
+        width: 500px;
+        height: 604px;
+        margin: 50px auto;
+        box-shadow: 0px 0px 100px 3px gray;
+        border-radius: 30px;
+        background-color: white;
+        text-align: center;
+        padding: 80px 40px;
+      }
+
+      button {
+        font-family: 'Shadows Into Light', cursive;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        background-color: #b3fff0;
+        display: block;
+        border: 0;
+        border-radius: 10px;
+        margin: 20px auto;
+        padding: 10px;
+        width: 100px;
+        height: 50px;
+        transition: width .2s;
+      }
+
+      @keyframes move {
+        0% {
+          transform: translateX(0px);
+        }
+        25% {
+          transform: translateX(100px);
+        }
+        50% {
+          transform: translateX(-100px);
+        }
+        75% {
+          transform: translateX(-100px);
+        }
+        100% {
+          transform: translateX(100px);
+        }
+      }
+
+      @keyframes fadeIn {
+        0% {opacity: 0;}
+        100% {opacity: 1;}
+      }
+
+      button:hover {
+        width: 200px;
+        animation-name: move;
+        animation-duration: 2s;
+      }
+
+      .test {
+        animation: fadeIn linear 1s;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>My Quiz</h1>
+    <div class="">
+      <h1 id="qtext"></h1>
+      <img src="" id="image">
+        <button type="button" id="a" onclick="userAnswer(this.id)" name="button"></button>
+        <button type="button" id="b" onclick="userAnswer(this.id)" name="button"></button>
+        <button type="button" id="c" onclick="userAnswer(this.id)" name="button"></button>
+        <button type="button" id="d" onclick="userAnswer(this.id)" name="button"></button>
+        <input type="button" name="button" value="Next" disabled="true" id="next" onclick="next()">
+    </div>
+    <audio src="https://www.myinstants.com/media/sounds/ding-sound-effect_1.mp3" autoplay="false" id="correct">
+    <audio src="https://www.myinstants.com/media/sounds/answer-wrong.mp3" autoplay="false" id="incorrect">
+    <script>
+      var questions = [
+      {
+        "text": "What is my name",
+        "answers": {
+          "a": "Eric",
+          "b": "Crie",
+          "c": "Eric",
+          "d": "Eric"
+        },
+        "correct": "b"
+      },
+      {
+        "text": "What is the name of this animal?",
+        "answers": {
+          "a": "kangaroo",
+          "b": "kookaburra",
+          "c": "quokka",
+          "d": "rabbit"
+        },
+        "image": "https://i.pinimg.com/originals/0e/09/e3/0e09e38ab6a60247b5c2be06a6b2c304.png",
+        "correct": "c"
+      }
+    ]
+      questionNum = 0;
+      correctCount = 0;
+      buttons = document.querySelectorAll("button");
+      qText = document.getElementById("qtext");
+      image = document.getElementById("image");
+      choices = ["a", "b", "c", "d"]
+
+      function setupQuiz() {
+        if (questionNum < questions.length) {
+          if ("image" in questions[questionNum]) {
+            image.src = questions[questionNum].image;
+            image.style.display = "block";
+          }
+          qText.innerHTML = questions[questionNum].text;
+
+          for (var i = 0; i < buttons.length; i++) {
+            buttons[i].innerHTML = questions[questionNum].answers[choices[i]]
+            buttons[i].disabled = false;
+            buttons[i].style.backgroundColor = "#b3fff0";
+          }
+        }
+        else {
+          qText.innerHTML = "That was all the questions!"
+          for (var i = 0; i < buttons.length; i++) {
+            buttons[i].disabled = true;
+          }
+          image.src = "";
+        }
+      }
+
+      function changeColor(correctID) {
+        for (var i = 0; i < buttons.length; i++) {
+          if (correctID == buttons[i].id) {
+            buttons[i].style.backgroundColor = "green";
+          }
+          else {
+            buttons[i].style.backgroundColor = "red";
+          }
+          buttons[i].disabled = true;
+        }
+      }
+
+
+      function userAnswer(id) {
+        current = questions[questionNum];
+        currentAnswer = current.correct;
+        changeColor(id);
+        console.log(current.correct)
+        console.log(id)
+        if (currentAnswer == id) {
+          correctCount++;
+          document.getElementById("correct").play()
+          console.log("testing")
+        }
+        else {
+          document.getElementById("incorrect").play()
+        }
+
+        questionNum++;
+        document.getElementById("next").disabled = false;
+
+      }
+
+      function next() {
+        qText.classList.add("test")
+        setupQuiz();
+        setTimeout(function(){qText.classList.remove("test")}, 1000)
+      }
+      setupQuiz();
+    </script>
+
+  </body>
+</html>
